@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>TEST</title>
     </head>
     <body>
-        <form>
-            
+        <h1>Karta</h1>
+        <p>Kolor: {card_color}</p>
+        <p>Symbol: {card_symbol}</p>
+
+        <form action="/karta" method="post">
+            <label for="color">Kolor</label>
+            <input type="text" id="color" name="color">
+
+            <label for="symbol">Symbol</label>
+            <input type="text" id="symbol" name="symbol">
+
+            <button type="submit">post</button>
         </form>
+
     </body>
 </html>
