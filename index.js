@@ -1,78 +1,58 @@
-import { createServer } from 'node:http'
-import { readFile } from 'node:fs/promises'
+import express from "express";
+import { readFile } from 'node:fs/promises';
 
-// Obiekt "karta"
-const card = {
-    color: "Niebieski",
-    symbol: "1",
 
-    getColor() {
-        return this.color
-    },
+const app = express();
+const port = 3000;
 
-    getSymbol() {
-        return this.symbol
+
+// Klasy
+// Klasa gracz
+class Player {
+    constructor(player_name, id) {
+        this.player_name = player_name
+        this.id = id
     }
 }
 
-
-const server = createServer(async (request, response) => {
-    console.log(
-        request.method,
-        request.url
-    )
-    
-
-    // const url = new URL(
-    //     request.url, "http://${request.headers.host}"
-    // )
-
-
-    // Nagłówki
-    response.setHeader(
-        'Content-Type',
-        'text/html; charset=utf-8'
-    )
-
-    // Ciało odpowiedzi
-    // GET /karta
-    if (request.method === "GET"  &&
-        request.url === "/karta"
-    ) {
-        let html_page = await readFile("./index.html", "utf-8")
-        html_page = html_page.replace("{card_color}", card.getColor())
-        html_page = html_page.replace("{card_symbol}", card.getSymbol())
-        response.write(html_page)
+// Klasa lobby
+class Lobby {
+    constructor(lobby_name, players) {
+        this.lobby_name = lobby_name
+        this.players = players
     }
+}
 
-    // POST /karta
-    else if (request.method === "POST" &&
-        request.url === "/karta"
-    ) {
-        let post = ""
-        
-        for await (const chunk of request) {
-            post += chunk
-        }
-        let params = new URLSearchParams(post)
-
-        card.color = params.get("color")
-        card.symbol = params.get("symbol")
+// Lista lobby na serwerze
+let lobbies = []
 
 
-        console.log("POST działa")
-        response.write("TEST")
-    }
+// Index
+app.get("/", (req, res) => {
+    res.send("STRONA GŁÓWNA; ZAWIERA LOBBY");  
+})
 
+// Logowanie
+app.get("/login", (req, res) => {
+    res.send("STRONA LOGOWANIA")
+})
 
-    response.end()
+// Rejestracja
+app.get("/register", (req, res) => {
+    res.send("STRONA REJESTRACJI")
+})
+
+// Strona danego lobby
+app.get("/lobby/:id", (req, res) => {
+    const id = req.params.id;
+
+    res.send(`STRONA LOBBY O ID: ${id}`)
 })
 
 
-
+app.listen(port, () => {
+    console.log("Server działa!")
+})
 
 
 console.log("hello")
-
-
-server.listen(3000)
