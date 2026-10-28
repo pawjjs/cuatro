@@ -1,5 +1,6 @@
 import express from "express";
 import { readFile } from 'node:fs/promises';
+import path from "node:path";
 
 
 const app = express();
@@ -9,44 +10,62 @@ const port = 3000;
 // Klasy
 // Klasa gracz
 class Player {
-    constructor(player_name, id) {
-        this.player_name = player_name
-        this.id = id
+    constructor(id, player_name) {
+        this.id = id;
+        this.player_name = player_name;
+        this.hand = [];
     }
 }
 
 // Klasa lobby
 class Lobby {
-    constructor(lobby_name, players) {
-        this.lobby_name = lobby_name
-        this.players = players
+    constructor(lobby_name, players, hostID) {
+        this.lobby_name = lobby_name;
+        this.players = players;
+        this.hostID = hostID;
     }
 }
 
-// Lista lobby na serwerze
-let lobbies = []
+// Mapa aktywnych lobby
+let lobbies = new Map();
+// Mapa zalogowanych graczy (w tym guestów bez założonego konta)
+let players = new Map();
 
 
-// Index
+// GET: Index
 app.get("/", (req, res) => {
-    res.send("STRONA GŁÓWNA; ZAWIERA LOBBY");  
-})
+    res.sendFile(
+        path.join(import.meta.dirname, "index.html")
+    );
+});
 
-// Logowanie
+// GET: Logowanie
 app.get("/login", (req, res) => {
     res.send("STRONA LOGOWANIA")
 })
 
-// Rejestracja
+// GET: Rejestracja
 app.get("/register", (req, res) => {
     res.send("STRONA REJESTRACJI")
 })
 
-// Strona danego lobby
+// GET: Strona danego lobby
 app.get("/lobby/:id", (req, res) => {
     const id = req.params.id;
 
-    res.send(`STRONA LOBBY O ID: ${id}`)
+    res.sendFile(
+        path.join(import.meta.dirname, "lobby.html")
+    );
+})
+
+// POST: Dołączanie do danego lobby
+app.post("/lobby/:id/join", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
 })
 
 
