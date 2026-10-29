@@ -1,78 +1,118 @@
-import { createServer } from 'node:http'
-import { readFile } from 'node:fs/promises'
+import express from "express";
+import { readFile } from 'node:fs/promises';
+import path from "node:path";
 
-// Obiekt "karta"
-const card = {
-    color: "Niebieski",
-    symbol: "1",
 
-    getColor() {
-        return this.color
-    },
+const app = express();
+const port = 3000;
 
-    getSymbol() {
-        return this.symbol
+
+// Klasy
+// Klasa gracz
+class Player {
+    constructor(id, player_name) {
+        this.id = id;
+        this.player_name = player_name;
+        this.hand = [];
     }
 }
 
-
-const server = createServer(async (request, response) => {
-    console.log(
-        request.method,
-        request.url
-    )
-    
-
-    // const url = new URL(
-    //     request.url, "http://${request.headers.host}"
-    // )
-
-
-    // Nagłówki
-    response.setHeader(
-        'Content-Type',
-        'text/html; charset=utf-8'
-    )
-
-    // Ciało odpowiedzi
-    // GET /karta
-    if (request.method === "GET"  &&
-        request.url === "/karta"
-    ) {
-        let html_page = await readFile("./index.html", "utf-8")
-        html_page = html_page.replace("{card_color}", card.getColor())
-        html_page = html_page.replace("{card_symbol}", card.getSymbol())
-        response.write(html_page)
+// Klasa lobby
+class Lobby {
+    constructor(lobby_name, players, hostID) {
+        this.lobby_name = lobby_name;
+        this.players = players;
+        this.hostID = hostID;
     }
+}
 
-    // POST /karta
-    else if (request.method === "POST" &&
-        request.url === "/karta"
-    ) {
-        let post = ""
-        
-        for await (const chunk of request) {
-            post += chunk
-        }
-        let params = new URLSearchParams(post)
-
-        card.color = params.get("color")
-        card.symbol = params.get("symbol")
+// Mapa aktywnych lobby
+let lobbies = new Map();
+// Mapa zalogowanych graczy (w tym guestów bez założonego konta)
+let players = new Map();
 
 
-        console.log("POST działa")
-        response.write("TEST")
-    }
+// GET: Index
+app.get("/", (req, res) => {
+    res.sendFile(
+        path.join(import.meta.dirname, "index.html")
+    );
+});
 
+// GET: Logowanie
+app.get("/login", (req, res) => {
+    res.send("STRONA LOGOWANIA")
+})
 
-    response.end()
+// GET: Rejestracja
+app.get("/register", (req, res) => {
+    res.send("STRONA REJESTRACJI")
+})
+
+// GET: Strona danego lobby
+app.get("/lobby/:id", (req, res) => {
+    const id = req.params.id;
+
+    res.sendFile(
+        path.join(import.meta.dirname, "lobby.html")
+    );
+})
+
+// POST: Dołączanie do danego lobby
+app.post("/lobby/:id/join", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Zagranie karty przez gracza
+app.post("/lobby/:id/card", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Wezwanie "UNO"
+app.post("/lobby/:id/call", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Wzięcie karty ze stosu
+app.post("/lobby/:id/take", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Opuszczenie lobby
+app.post("/lobby/:id/leave", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
 })
 
 
 
+app.listen(port, () => {
+    console.log("Server działa!")
+})
 
 
 console.log("hello")
-
-
-server.listen(3000)

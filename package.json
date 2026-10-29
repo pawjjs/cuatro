@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Projekt jest grą inspirowaną UNO. Program będzie napisany w JavaScript i będzie pozwalał na rozegranie partii w grupie od dwóch (2) do dziesięciu (10) osób.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
@@ -13,5 +14,8 @@
     "url": "git@github.com-KStefanowicz04:pawjjs/cuatro.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
 }
