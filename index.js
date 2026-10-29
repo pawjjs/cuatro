@@ -68,6 +68,47 @@ app.post("/lobby/:id/join", (req, res) => {
     // );
 })
 
+// POST: Zagranie karty przez gracza
+app.post("/lobby/:id/card", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Wezwanie "UNO"
+app.post("/lobby/:id/call", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Wzięcie karty ze stosu
+app.post("/lobby/:id/take", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+// POST: Opuszczenie lobby
+app.post("/lobby/:id/leave", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
+
 
 app.listen(port, () => {
     console.log("Server działa!")
