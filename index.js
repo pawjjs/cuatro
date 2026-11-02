@@ -64,7 +64,9 @@ let players = new Map();
 
 
 // Routing
-app.use("/api/lobby", lobbyRouter);
+//
+// Routing na Lobby
+app.use("/lobby", lobbyRouter);
 
 
 // GET: Index

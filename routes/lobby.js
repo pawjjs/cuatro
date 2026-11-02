@@ -1,9 +1,10 @@
 import { Router } from "express";
+import path from "node:path";
 
 const router = Router();
-router.get("/", (req, res) => {
+// router.get("/", (req, res) => {
     
-});
+// });
 
 
 // Klasa lobby
@@ -32,8 +33,16 @@ let lobbies = new Map();
 
 
 // Endpointy
+// GET: Strona z listą lobby
+router.get("/", (req, res) => {
+    console.log("GET: lobby - ", import.meta.dirname)
+    res.sendFile(
+        path.join(import.meta.dirname, "lobby.html")
+    );
+})
+
 // GET: Strona danego lobby
-router.get("/lobby/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     const id = req.params.id;
 
     res.sendFile(
@@ -42,7 +51,7 @@ router.get("/lobby/:id", (req, res) => {
 })
 
 // POST: Dołączanie do danego lobby
-router.post("/lobby/:id/join", (req, res) => {
+router.post("/:id/join", (req, res) => {
     const id = req.params.id;
     const lobby = lobbies.get(id)
 
@@ -52,7 +61,7 @@ router.post("/lobby/:id/join", (req, res) => {
 })
 
 // POST: Zagranie karty przez gracza
-router.post("/lobby/:id/card", (req, res) => {
+router.post("/:id/card", (req, res) => {
     const id = req.params.id;
     const lobby = lobbies.get(id)
 
@@ -62,7 +71,7 @@ router.post("/lobby/:id/card", (req, res) => {
 })
 
 // POST: Wezwanie "UNO"
-router.post("/lobby/:id/call", (req, res) => {
+router.post("/:id/call", (req, res) => {
     const id = req.params.id;
     const lobby = lobbies.get(id)
 
@@ -72,7 +81,7 @@ router.post("/lobby/:id/call", (req, res) => {
 })
 
 // POST: Wzięcie karty ze stosu
-router.post("/lobby/:id/take", (req, res) => {
+router.post("/:id/take", (req, res) => {
     const id = req.params.id;
     const lobby = lobbies.get(id)
 
@@ -82,7 +91,7 @@ router.post("/lobby/:id/take", (req, res) => {
 })
 
 // POST: Opuszczenie lobby
-router.post("/lobby/:id/leave", (req, res) => {
+router.post("/:id/leave", (req, res) => {
     const id = req.params.id;
     const lobby = lobbies.get(id)
 
