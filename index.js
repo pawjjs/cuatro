@@ -13,14 +13,6 @@ import lobbyRouter from "./routes/lobby.js"
 const app = express();
 app.use(express.json());
 
-// Specyfikacja OpenAPI w openapi.yaml
-// const spec = YAML.parse(
-//     readFileSync(new URL("./openapi.yaml", import.meta.url), "utf8")
-// );
-
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(spec));  // zawiera YAML
-app.use("/api-docs", swaggerUi.serve);
-
 const port = 3000;
 
 const swaggerSpec = swaggerJsdoc({
@@ -35,7 +27,9 @@ const swaggerSpec = swaggerJsdoc({
             { url: `http://localhost:${port}` }
         ]
     },
-    apis: []
+    apis: [
+        "./routes/lobby.js"
+    ]
 })
 
 app.use(
