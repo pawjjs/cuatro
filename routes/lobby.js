@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 
 const router = Router();
@@ -10,6 +11,7 @@ const router = Router();
 // Klasa lobby
 class Lobby {
     constructor(lobby_name, players, hostID) {
+        this.lobby_id = randomUUID();
         this.lobby_name = lobby_name;
         this.players = players;
         this.hostID = hostID;
@@ -31,12 +33,31 @@ let lobbies = new Map();
  *          - Lobby
  *      responses:
  *          '200':
- *              description: Lista lobby
+ *              description: Lista Lobby
  *          '400':
  *              description: Lobby nie znaleziono
  */
 router.get("/", (req, res) => {
     console.log("GET: lobby - ", import.meta.dirname)
+    res.sendFile(
+        path.join(import.meta.dirname, "lobby.html")
+    );
+})
+
+// POST: Tworzenie nowego lobby
+/**
+ * @openapi
+ * /lobby/create:
+ *  post:
+ *      summary: Tworzenie nowego Lobby
+ *      tags:
+ *          - Lobby
+ *      responses:
+ *          '200':
+ *              description: Utworzono Lobby
+ */
+router.get("/", (req, res) => {
+    console.log("POST: lobby - ", import.meta.dirname)
     res.sendFile(
         path.join(import.meta.dirname, "lobby.html")
     );
@@ -63,9 +84,7 @@ router.get("/", (req, res) => {
  *          '400':
  *              description: Lobby nie znaleziono
  */
-router.get("/:id", (req, res) => {
-    const id = req.params.id;
-
+router.get("/create", (req, res) => {
     res.sendFile(
         path.join(import.meta.dirname, "lobby.html")
     );
