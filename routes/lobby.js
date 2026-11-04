@@ -1,25 +1,30 @@
 import { Router } from "express";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
+import Game from "../logic/game.js";
 
 const router = Router();
 // router.get("/", (req, res) => {
-    
+//
 // });
 
 
 // Klasa lobby
-class Lobby {
+export class Lobby {
     constructor(lobby_name, players, hostID) {
         this.lobby_id = randomUUID();
         this.lobby_name = lobby_name;
         this.players = players;
         this.hostID = hostID;
+        this.game;
+    }
+
+    // Rozpoczęcie gry w Lobby
+    startLobbyGame() {
+        this.game = new Game(this.players);
+        this.game.startGame()
     }
 }
-
-// Mapa aktywnych lobby
-let lobbies = new Map();
 
 
 // Endpointy
@@ -44,23 +49,30 @@ router.get("/", (req, res) => {
     );
 })
 
-// POST: Tworzenie nowego lobby
+// POST: Utworzenie nowego lobby
 /**
  * @openapi
  * /lobby/create:
  *  post:
- *      summary: Tworzenie nowego Lobby
+ *      summary: Utworzenie nowego Lobby
  *      tags:
  *          - Lobby
  *      responses:
  *          '200':
- *              description: Utworzono Lobby
+ *              description: Utworzenie nowego lobby
+ *          '400':
+ *              description: Lobby nie znaleziono
  */
-router.get("/", (req, res) => {
+router.post("/create/", (req, res) => {
     console.log("POST: lobby - ", import.meta.dirname)
-    res.sendFile(
-        path.join(import.meta.dirname, "lobby.html")
-    );
+
+    // const lobby_name = req.params.name
+    // let lobby = new Lobby(lobby_name)
+
+    
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
 })
 
 // GET: Strona danego lobby
@@ -90,6 +102,40 @@ router.get("/create", (req, res) => {
     );
 })
 
+// POST: Rozpoczęcie gry w lobby
+/**
+ * @openapi
+ * /lobby/{id}/start:
+ *  post:
+ *      summary: Rozpoczęcie gry w danym Lobby
+ *      tags:
+ *          - Lobby
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *            schema:
+ *                type: string
+ *            description: ID danego Lobby
+ *      responses:
+ *          '200':
+ *              description: Rozpoczęcie gry w lobby
+ *          '400':
+ *              description: Lobby nie znaleziono
+ */
+router.post("/:id/start", (req, res) => {
+    const id = req.params.id;
+    const lobby = lobbies.get(id)
+
+    // Rozpoczęcie gry przez lobby
+    lobby.startGame();
+
+
+    // res.sendFile(
+    //     path.join(import.meta.dirname, "lobby.html")
+    // );
+})
+
 // POST: Dołączanie do danego lobby
 /**
  * @openapi
@@ -107,7 +153,7 @@ router.get("/create", (req, res) => {
  *            description: ID danego Lobby
  *      responses:
  *          '200':
- *              description: Dołączeniie do lobby
+ *              description: Dołączenie do lobby
  *          '400':
  *              description: Lobby nie znaleziono
  */

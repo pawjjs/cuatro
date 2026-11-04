@@ -59,12 +59,12 @@ export default class Game {
 
 
     // Rozpoczęcie gry
-    start_game() {
+    startGame() {
         // Utworzenie kart
         this.createDeck();
 
         // Przydzielenie 7 kart każdemu graczowi
-        for (let player in players) {
+        for (let player of players) {
             player.hand = this.drawPile.splice(0, 7);
         }
 
