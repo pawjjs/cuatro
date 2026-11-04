@@ -82,4 +82,41 @@ export default class Game {
             i++;
         }
     }
+
+    // Zagranie karty
+    playCard(player, played_card) {
+        // Kartę może zagrać tylko gracz odgrywający obecną turę
+        if (player.id != this.currentPlayerId) {
+            return
+        }
+
+        // Jeśli karta nie jest prawidłowa, nie może zostać zagrana
+        if (!this.checkCardValid(played_card)) {
+            return
+        }
+
+        // Dodanie karty do stosu zagranych kart
+        this.discardPile.push(played_card)
+
+        card_index = player.hand.indexOf(played_card);  // Indeks zagranej karty w ręce gracza
+        player.hand.splice(card_index, 1);  // Usunięcie zagranej karty z ręki gracza
+    }
+
+    // Sprawdzenie czy dana karta jest prawidłowa/czy można ją zagrać
+    checkCardValid(new_card) {
+        // Dana karta musi mieć ten sam kolor albo numer co ostatnio zagrana karta
+        last_played_card = this.getLastPlayedCard();
+        if ((new_card.color === last_played_card.color) || (new_card.value === last_played_card.value)) {
+            return true
+        }
+
+        // ??? sprawdzenie specjalnych kart tutaj ???
+
+        return false
+    }
+
+    // Zwrócenie ostatnio zagranej karty, czyli tej na górze stosu zagranych kart
+    getLastPlayedCard() {
+        return this.discardPile[-1]
+    }
 }
