@@ -39,18 +39,6 @@ app.use(
 );
 
 
-
-// Klasy
-// Klasa gracz
-class Player {
-    constructor(id, player_name) {
-        this.id = id;
-        this.player_name = player_name;
-        this.hand = [];
-    }
-}
-
-
 // Mapa zalogowanych graczy (w tym guestów bez założonego konta)
 let players = new Map();
 
