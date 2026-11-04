@@ -41,6 +41,8 @@ app.use(
 
 // Mapa zalogowanych graczy (w tym guestów bez założonego konta)
 let players = new Map();
+// Mapa aktywnych lobby
+let lobbies = new Map();
 
 
 
