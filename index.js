@@ -1,35 +1,56 @@
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import YAML from "yaml";
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from "node:fs";
 import path from "node:path";
+
+// Routery
+import lobbyRouter from "./routes/lobby.js"
 
 
 const app = express();
+app.use(express.json());
+
 const port = 3000;
 
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: "3.2.1",
+        info: {
+            title: "Lobby API",
+            version: "1.0.0",
+            description: "API do zarządzania Lobby"
+        },
+        servers: [
+            { url: `http://localhost:${port}` }
+        ]
+    },
+    apis: [
+        "./routes/lobby.js"
+    ]
+})
 
-// Klasy
-// Klasa gracz
-class Player {
-    constructor(id, player_name) {
-        this.id = id;
-        this.player_name = player_name;
-        this.hand = [];
-    }
-}
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec)
+);
 
-// Klasa lobby
-class Lobby {
-    constructor(lobby_name, players, hostID) {
-        this.lobby_name = lobby_name;
-        this.players = players;
-        this.hostID = hostID;
-    }
-}
 
-// Mapa aktywnych lobby
-let lobbies = new Map();
 // Mapa zalogowanych graczy (w tym guestów bez założonego konta)
 let players = new Map();
+// Mapa aktywnych lobby
+let lobbies = new Map();
+
+
+
+
+// Routing
+//
+// Routing na Lobby
+app.use("/lobby", lobbyRouter);
 
 
 // GET: Index
@@ -47,65 +68,6 @@ app.get("/login", (req, res) => {
 // GET: Rejestracja
 app.get("/register", (req, res) => {
     res.send("STRONA REJESTRACJI")
-})
-
-// GET: Strona danego lobby
-app.get("/lobby/:id", (req, res) => {
-    const id = req.params.id;
-
-    res.sendFile(
-        path.join(import.meta.dirname, "lobby.html")
-    );
-})
-
-// POST: Dołączanie do danego lobby
-app.post("/lobby/:id/join", (req, res) => {
-    const id = req.params.id;
-    const lobby = lobbies.get(id)
-
-    // res.sendFile(
-    //     path.join(import.meta.dirname, "lobby.html")
-    // );
-})
-
-// POST: Zagranie karty przez gracza
-app.post("/lobby/:id/card", (req, res) => {
-    const id = req.params.id;
-    const lobby = lobbies.get(id)
-
-    // res.sendFile(
-    //     path.join(import.meta.dirname, "lobby.html")
-    // );
-})
-
-// POST: Wezwanie "UNO"
-app.post("/lobby/:id/call", (req, res) => {
-    const id = req.params.id;
-    const lobby = lobbies.get(id)
-
-    // res.sendFile(
-    //     path.join(import.meta.dirname, "lobby.html")
-    // );
-})
-
-// POST: Wzięcie karty ze stosu
-app.post("/lobby/:id/take", (req, res) => {
-    const id = req.params.id;
-    const lobby = lobbies.get(id)
-
-    // res.sendFile(
-    //     path.join(import.meta.dirname, "lobby.html")
-    // );
-})
-
-// POST: Opuszczenie lobby
-app.post("/lobby/:id/leave", (req, res) => {
-    const id = req.params.id;
-    const lobby = lobbies.get(id)
-
-    // res.sendFile(
-    //     path.join(import.meta.dirname, "lobby.html")
-    // );
 })
 
 
