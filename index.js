@@ -1,3 +1,5 @@
+import { WebSocketServer } from "ws";
+import http from "http";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
@@ -10,8 +12,12 @@ import path from "node:path";
 import lobbyRouter from "./routes/lobby.js"
 
 
+// Serwer; express, http, WebSocket
 const app = express();
 app.use(express.json());
+const server = http.createServer(app);
+const wss = new WebSocketServer({server});
+
 
 const port = 3000;
 
@@ -52,29 +58,42 @@ let lobbies = new Map();
 // Routing na Lobby
 app.use("/lobby", lobbyRouter);
 
-
+// Tymczasowy (?) routing w index.js
 // GET: Index
 app.get("/", (req, res) => {
     res.sendFile(
         path.join(import.meta.dirname, "index.html")
     );
 });
-
 // GET: Logowanie
 app.get("/login", (req, res) => {
     res.send("STRONA LOGOWANIA")
 })
-
 // GET: Rejestracja
 app.get("/register", (req, res) => {
     res.send("STRONA REJESTRACJI")
 })
 
 
+// WSS on...
+wss.on("connection", (client)=>{
+    console.log("Połączenie")
+    // Wiadomość do klienta przy połączeniu
+    client.send("Połączono z serwerem");
 
-app.listen(port, () => {
-    console.log("Server działa!")
+    // Wiadomość od klienta
+    client.on("message", (msg)=>{
+        console.log(msg)
+    })
 })
 
 
-console.log("hello")
+const ws = new WebSocket("ws://localhost:3000");
+
+ws.onopen = () => console.log("hello");
+ws.onmessage = (event) => console.log(event.data);
+
+
+server.listen(port, () => {
+    console.log("Server działa!")
+})
