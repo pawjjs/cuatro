@@ -53,6 +53,14 @@ let lobbies = new Map();
 app.use("/lobby", lobbyRouter);
 
 
+
+
+// Routing
+//
+// Routing na Lobby
+app.use("/lobby", lobbyRouter);
+
+
 // GET: Index
 app.get("/", (req, res) => {
     res.sendFile(
