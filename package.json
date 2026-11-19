@@ -7,7 +7,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:init": "sqlite3 books.db < db/schema.sql",
+    "db:seed": "sqlite3 books.db < db/seed.sql",
+    "db:reset": "sqlite3 books.db < db/schema.sql && sqlite3 books.db < db/seed.sql"
   },
   "repository": {
     "type": "git",
