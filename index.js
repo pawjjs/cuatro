@@ -7,6 +7,16 @@ import YAML from "yaml";
 import { readFile } from 'node:fs/promises';
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { openDatabase } from './db.js'
+
+const db = openDatabase()
+
+const allBooks = db.prepare(
+  'SELECT * FROM books'
+).all();
+console.table(allBooks)
+
+db.close()
 
 // Routery
 import lobbyRouter from "./routes/lobby.js"
@@ -16,32 +26,32 @@ import lobbyRouter from "./routes/lobby.js"
 const app = express();
 app.use(express.json());
 const server = http.createServer(app);
-const wss = new WebSocketServer({server});
+const wss = new WebSocketServer({ server });
 
 
 const port = 3000;
 
 const swaggerSpec = swaggerJsdoc({
-    definition: {
-        openapi: "3.2.1",
-        info: {
-            title: "Lobby API",
-            version: "1.0.0",
-            description: "API do zarządzania Lobby"
-        },
-        servers: [
-            { url: `http://localhost:${port}` }
-        ]
+  definition: {
+    openapi: "3.2.1",
+    info: {
+      title: "Lobby API",
+      version: "1.0.0",
+      description: "API do zarządzania Lobby"
     },
-    apis: [
-        "./routes/lobby.js"
+    servers: [
+      { url: `http://localhost:${port}` }
     ]
+  },
+  apis: [
+    "./routes/lobby.js"
+  ]
 })
 
 app.use(
-    "/api-docs",
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerSpec)
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
 );
 
 
@@ -61,30 +71,30 @@ app.use("/lobby", lobbyRouter);
 // Tymczasowy (?) routing w index.js
 // GET: Index
 app.get("/", (req, res) => {
-    res.sendFile(
-        path.join(import.meta.dirname, "index.html")
-    );
+  res.sendFile(
+    path.join(import.meta.dirname, "index.html")
+  );
 });
 // GET: Logowanie
 app.get("/login", (req, res) => {
-    res.send("STRONA LOGOWANIA")
+  res.send("STRONA LOGOWANIA")
 })
 // GET: Rejestracja
 app.get("/register", (req, res) => {
-    res.send("STRONA REJESTRACJI")
+  res.send("STRONA REJESTRACJI")
 })
 
 
 // WSS on...
-wss.on("connection", (client)=>{
-    console.log("Połączenie")
-    // Wiadomość do klienta przy połączeniu
-    client.send("Połączono z serwerem");
+wss.on("connection", (client) => {
+  console.log("Połączenie")
+  // Wiadomość do klienta przy połączeniu
+  client.send("Połączono z serwerem");
 
-    // Wiadomość od klienta
-    client.on("message", (msg)=>{
-        console.log(msg)
-    })
+  // Wiadomość od klienta
+  client.on("message", (msg) => {
+    console.log(msg)
+  })
 })
 
 
@@ -95,5 +105,5 @@ ws.onmessage = (event) => console.log(event.data);
 
 
 server.listen(port, () => {
-    console.log("Server działa!")
+  console.log("Server działa!")
 })
